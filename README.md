@@ -58,7 +58,3 @@ A palavra digitada é invertida utilizando fatiamento de string (`[::-1]`) e com
 ## 🎯 Objetivo dos Exercícios
 
 Esses exercícios têm como objetivo fortalecer a **base lógica** do programador iniciante, preparando-o para desafios mais avançados em Python e em outras linguagens de programação.
-
----
-
-🚀 *Bons estudos e boa programação!*
