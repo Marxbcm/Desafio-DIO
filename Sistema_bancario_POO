@@ -1,0 +1,117 @@
+class Usuario:
+    def __init__(self, nome, cpf):
+        self.nome = nome
+        self.cpf = cpf
+
+class ContaBancaria:
+    def __init__(self, usuario, numero_conta):
+        self.usuario = usuario
+        self.numero_conta = numero_conta
+        self.saldo = 0.0
+        self.extrato = []
+
+    def depositar(self, valor):
+        if valor > 0:
+            self.saldo += valor
+            self.extrato.append(f"Deposito: +R$ {valor:.2f}")
+            return True
+        return False
+
+    def sacar(self, valor):
+        if 0 < valor <= self.saldo:
+            self.saldo -= valor
+            self.extrato.append(f"Saque: -R$ {valor:.2f}")
+            return True
+        return False
+
+    def mostrar_extrato(self):
+        print("\nExtrato da Conta")
+        for operacao in self.extrato:
+            print(operacao)
+        print(f"Saldo atual: R$ {self.saldo:.2f}")
+
+class Banco:
+    def __init__(self):
+        self.usuarios = []
+        self.contas = []
+        self.contador_contas = 1
+
+    def criar_usuario(self, nome, cpf):
+        usuario = Usuario(nome, cpf)
+        self.usuarios.append(usuario)
+        return usuario
+
+    def criar_conta(self, usuario):
+        conta = ContaBancaria(usuario, self.contador_contas)
+        self.contador_contas += 1
+        self.contas.append(conta)
+        return conta
+
+    def listar_contas(self):
+        for conta in self.contas:
+            print(f"Conta {conta.numero_conta} | Usuario: {conta.usuario.nome} | Saldo: R$ {conta.saldo:.2f}")
+
+# Menu principal
+banco = Banco()
+
+while True:
+    print("\n=== Sistema Bancario ===")
+    print("1 - Criar Usuario")
+    print("2 - Criar Conta")
+    print("3 - Depositar")
+    print("4 - Sacar")
+    print("5 - Extrato")
+    print("6 - Listar Contas")
+    print("0 - Sair")
+
+    opcao = input("Escolha uma opcao: ")
+
+    if opcao == "1":
+        nome = input("Nome: ")
+        cpf = input("CPF: ")
+        banco.criar_usuario(nome, cpf)
+        print("Usuario criado com sucesso!")
+
+    elif opcao == "2":
+        if not banco.usuarios:
+            print("Nenhum usuario cadastrado.")
+        else:
+            usuario = banco.usuarios[-1]
+            conta = banco.criar_conta(usuario)
+            print(f"Conta criada com numero {conta.numero_conta}")
+
+    elif opcao == "3":
+        numero = int(input("Numero da conta: "))
+        valor = float(input("Valor do deposito: "))
+        conta = next((c for c in banco.contas if c.numero_conta == numero), None)
+        if conta and conta.depositar(valor):
+            print("Deposito realizado com sucesso!")
+        else:
+            print("Erro no deposito.")
+
+    elif opcao == "4":
+        numero = int(input("Numero da conta: "))
+        valor = float(input("Valor do saque: "))
+        conta = next((c for c in banco.contas if c.numero_conta == numero), None)
+        if conta and conta.sacar(valor):
+            print("Saque realizado com sucesso!")
+        else:
+            print("Erro no saque.")
+
+    elif opcao == "5":
+        numero = int(input("Numero da conta: "))
+        conta = next((c for c in banco.contas if c.numero_conta == numero), None)
+        if conta:
+            conta.mostrar_extrato()
+        else:
+            print("Conta nao encontrada.")
+
+    elif opcao == "6":
+        banco.listar_contas()
+
+    elif opcao == "0":
+        print("Encerrando sistema...")
+        break
+
+    else:
+        print("Opcao invalida.")
