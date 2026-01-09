@@ -1,6 +1,6 @@
 # 📘 Exercícios Básicos em Python
 
-Este repositório contém **três exercícios introdutórios em Python**, focados em lógica de programação, entrada de dados, condicionais, operadores aritméticos e manipulação de strings. Eles são ideais para quem está começando a aprender a linguagem.
+Este repositório contém **exercícios introdutórios em Python**, focados em lógica de programação,funções em python, programação a objeto, entrada de dados, condicionais, operadores aritméticos e manipulação de strings. Eles são ideais para quem está começando a aprender a linguagem.
 
 ## 🎯 Objetivo dos Exercícios
 
