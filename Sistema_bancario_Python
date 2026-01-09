@@ -1,0 +1,172 @@
+# SISTEMA BANCÁRIO SIMPLES
+
+usuarios = []
+contas = []
+
+LIMITE_SAQUE = 500
+MAX_SAQUES = 3
+
+
+# FUNÇÕES DE USUÁRIO
+def criar_usuario(usuarios):
+    cpf = input("CPF (somente números): ")
+
+    usuario = filtrar_usuario(cpf, usuarios)
+    if usuario:
+        print("Usuário já existe.")
+        return
+
+    nome = input("Nome completo: ")
+    nascimento = input("Data de nascimento (dd/mm/aaaa): ")
+    endereco = input("Endereço (logradouro, nº - bairro - cidade/UF): ")
+
+    usuarios.append({
+        "nome": nome,
+        "cpf": cpf,
+        "nascimento": nascimento,
+        "endereco": endereco
+    })
+
+    print("Usuário criado com sucesso!")
+
+
+def filtrar_usuario(cpf, usuarios):
+    for usuario in usuarios:
+        if usuario["cpf"] == cpf:
+            return usuario
+    return None
+
+
+# FUNÇÕES DE CONTA
+def criar_conta(contas, usuarios):
+    cpf = input("Informe o CPF do usuário: ")
+    usuario = filtrar_usuario(cpf, usuarios)
+
+    if not usuario:
+        print("Usuário não encontrado.")
+        return
+
+    numero_conta = len(contas) + 1
+
+    contas.append({
+        "agencia": "0001",
+        "numero": numero_conta,
+        "usuario": usuario,
+        "saldo": 0,
+        "extrato": "",
+        "saques": 0
+    })
+
+    print("Conta criada com sucesso!")
+
+
+def listar_contas(contas):
+    if not contas:
+        print("Nenhuma conta cadastrada.")
+        return
+
+    for conta in contas:
+        print(f"""
+Agência: {conta['agencia']}
+Conta: {conta['numero']}
+Titular: {conta['usuario']['nome']}
+-----------------------------
+""")
+
+
+# OPERAÇÕES BANCÁRIAS
+def depositar(conta):
+    valor = float(input("Valor do depósito: R$ "))
+
+    if valor > 0:
+        conta["saldo"] += valor
+        conta["extrato"] += f"Depósito: R$ {valor:.2f}\n"
+        print("Depósito realizado com sucesso!")
+    else:
+        print("Valor inválido.")
+
+
+def sacar(conta):
+    valor = float(input("Valor do saque: R$ "))
+
+    if valor > conta["saldo"]:
+        print("Saldo insuficiente.")
+    elif valor > LIMITE_SAQUE:
+        print("Limite de saque excedido.")
+    elif conta["saques"] >= MAX_SAQUES:
+        print("Número máximo de saques atingido.")
+    elif valor > 0:
+        conta["saldo"] -= valor
+        conta["extrato"] += f"Saque: R$ {valor:.2f}\n"
+        conta["saques"] += 1
+        print("Saque realizado com sucesso!")
+    else:
+        print("Valor inválido.")
+
+
+def exibir_extrato(conta):
+    print("\n📄 EXTRATO")
+    print(conta["extrato"] if conta["extrato"] else "Nenhuma movimentação.")
+    print(f"Saldo: R$ {conta['saldo']:.2f}")
+    print("----------------------")
+
+
+def selecionar_conta(contas):
+    numero = int(input("Informe o número da conta: "))
+
+    for conta in contas:
+        if conta["numero"] == numero:
+            return conta
+
+    print("Conta não encontrada.")
+    return None
+
+
+# MENU PRINCIPAL
+def menu():
+    return """
+========== BANCO PY ==========
+[1] Depositar
+[2] Sacar
+[3] Extrato
+[4] Novo Usuário
+[5] Nova Conta
+[6] Listar Contas
+[0] Sair
+=> """
+
+
+# PROGRAMA PRINCIPAL
+while True:
+    opcao = input(menu())
+
+    if opcao == "1":
+        conta = selecionar_conta(contas)
+        if conta:
+            depositar(conta)
+
+    elif opcao == "2":
+        conta = selecionar_conta(contas)
+        if conta:
+            sacar(conta)
+
+    elif opcao == "3":
+        conta = selecionar_conta(contas)
+        if conta:
+            exibir_extrato(conta)
+
+    elif opcao == "4":
+        criar_usuario(usuarios)
+
+    elif opcao == "5":
+        criar_conta(contas, usuarios)
+
+    elif opcao == "6":
+        listar_contas(contas)
+
+    elif opcao == "0":
+        print("Saindo do sistema...")
+        break
+
+    else:
+        print("Opção inválida.")
